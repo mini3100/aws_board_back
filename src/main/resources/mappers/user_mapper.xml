@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.board.repository.UserMapper">
+
+    <insert id="saveUser" parameterType="com.korit.board.entity.User">
+        insert into user_tb
+        values(0, #{email}, #{password}, #{name}, #{nickname}, 0)
+    </insert>
+    <select id="checkDuplicate"
+            parameterType="com.korit.board.entity.User"
+            resultType="integer">
+        select
+            (select
+                if(count(*) > 0, 1, 0)
+            from
+                user_tb
+            where
+                email = #{email}
+            )
+            + (select
+                if(count(*) > 0, 2, 0)
+            from
+                user_tb
+            where
+                nickname = #{nickname}
+            ) as result
+    </select>
+</mapper>
