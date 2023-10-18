@@ -8,3 +8,6 @@ spring:
 mybatis:
   mapper-locations:
     - /mappers/*.xml
+
+jwt:
+  secret: hEaEp/ai2+eG/PbML+9GA3cY4rZtBr2p/OX5um4N/+jir2fq2/ciASmbUfKtFMFsnOn/lS2d69KXab+n6pu1sw==
