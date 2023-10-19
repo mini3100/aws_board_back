@@ -34,7 +34,6 @@ public class JwtProvider {
 
     public String generateToken(Authentication authentication) {
         String email = authentication.getName();
-        PrincipalUser principalUser = (PrincipalUser) authentication.getPrincipal();
 
         Date date = new Date(new Date().getTime() + (1000 * 60 * 60 * 24));
 
@@ -42,7 +41,6 @@ public class JwtProvider {
                 .setSubject("AccessToken")
                 .setExpiration(date)
                 .claim("email", email)
-                .claim("disabled", principalUser.isEnabled())
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -70,13 +68,13 @@ public class JwtProvider {
 
     public Authentication getAuthentication(String token) {
         Claims claims = getClaims(token);
-        if(claims == null) {
+        if(claims == null) {    // 토큰이 유효하지 않은 경우
             return null;
         }
 
         // 클레임 정보에서 이메일 값을 추출하여 해당 이메일을 가진 사용자를 데이터베이스에서 찾음
         User user = userMapper.findUserByEmail(claims.get("email").toString());
-        if(user == null) {
+        if(user == null) {  // 토큰은 유효하지만 db에서 user를 지워버렸을 경우
             return null;
         }
 
@@ -85,5 +83,16 @@ public class JwtProvider {
         // Spring Security의 UsernamePasswordAuthenticationToken을 사용하여
         // 사용자 정보와 권한 정보를 포함한 Authentication 객체를 생성하고 반환
         return new UsernamePasswordAuthenticationToken(principalUser, null, principalUser.getAuthorities());
+    }
+
+    public String generateAuthMailToken(String email) {
+        Date date = new Date(new Date().getTime() + 1000 * 60 * 5); // 메일 인증 토큰 유효기간 : 5분
+
+        return Jwts.builder()
+                .setSubject("AuthenticationEmailToken")
+                .setExpiration(date)
+                .claim("email", email)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
     }
 }

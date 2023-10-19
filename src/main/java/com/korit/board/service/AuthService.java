@@ -60,6 +60,8 @@ public class AuthService {
     }
 
     public String signin(SigninReqDto signinReqDto) {
+        // UsernamePasswordAuthenticationToken : Authentication을 상속 받은 객체
+        // email과 password를 담은 Authentication을 생성하는 것.
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(signinReqDto.getEmail(), signinReqDto.getPassword());
 

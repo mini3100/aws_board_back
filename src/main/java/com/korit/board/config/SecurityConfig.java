@@ -36,7 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(principalEntryPoint);
+                .authenticationEntryPoint(principalEntryPoint); // filter에서 인증되지 않으면 principalEntryPoint에서 예외처리
 
 //        super.configure(http);  // 부모가 가지고 있는 원래 설정
     }

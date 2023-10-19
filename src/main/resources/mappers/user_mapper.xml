@@ -16,6 +16,15 @@
         insert into user_tb
         values(0, #{email}, #{password}, #{name}, #{nickname}, 0)
     </insert>
+
+    <update id="updateEnabledToEmail">
+        update user_tb
+        set
+            enabled = 1
+        where
+            email = #{email}
+    </update>
+
     <select id="checkDuplicate"
             parameterType="com.korit.board.entity.User"
             resultType="integer">
@@ -35,6 +44,7 @@
                 nickname = #{nickname}
             ) as result
     </select>
+
     <select id="findUserByEmail" resultMap="userMap">
         select
             user_id,
