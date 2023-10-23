@@ -8,5 +8,8 @@ public interface UserMapper {
     public Integer saveUser(User user);
     public Integer checkDuplicate(User user);
     public User findUserByEmail(String email);
+    public User findUserByOauth2Id(String oauth2Id);
     public int updateEnabledToEmail(String email);
+    public int updateProfileUrl(User user);
+    public int updatePassword(User user);
 }

@@ -2,6 +2,8 @@ package com.korit.board.config;
 
 import com.korit.board.filter.JwtAuthenticationFilter;
 import com.korit.board.security.PrincipalEntryPoint;
+import com.korit.board.security.oauth2.OAuth2SuccessHandler;
+import com.korit.board.service.PrincipalUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,6 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final PrincipalEntryPoint principalEntryPoint;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final PrincipalUserDetailsService principalUserDetailsService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -36,8 +40,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling()
-                .authenticationEntryPoint(principalEntryPoint); // filter에서 인증되지 않으면 principalEntryPoint에서 예외처리
-
-//        super.configure(http);  // 부모가 가지고 있는 원래 설정
+                .authenticationEntryPoint(principalEntryPoint)  // filter에서 인증되지 않으면 principalEntryPoint에서 예외처리
+                .and()
+                .oauth2Login()  // 로그인 설정
+                .loginPage("http://localhost:3000/auth/signin") // 로그인 페이지 경로
+                .successHandler(oAuth2SuccessHandler)
+                .userInfoEndpoint()
+                .userService(principalUserDetailsService);
     }
 }

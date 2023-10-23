@@ -11,4 +11,7 @@ public class PrincipalRespDto { // 마이페이지에서 쓸 정보들 응답. p
     private String name;
     private String nickname;
     private boolean enabled;
+    private String profileUrl;
+    private String oauth2Id;
+    private String provider;
 }

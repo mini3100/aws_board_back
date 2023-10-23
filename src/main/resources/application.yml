@@ -1,8 +1,38 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            clientId: d6d20814a399d87116a7eaf2a219d520
+            redirectUri: http://localhost:8080/login/oauth2/code/kakao
+            authorizationGrantType: authorization_code
+            clientAuthenticationMethod: POST
+            clientName: Kakao
+          naver:
+            clientId: c_YcjWVn31pgFbsIPf6W
+            clientSecret: DrTsLrDZCK
+            redirectUri: http://localhost:8080/login/oauth2/code/naver
+            authorizationGrantType: authorization_code
+            clientAuthenticationMethod: POST
+            clientName: Naver
+        provider:
+          kakao:
+            authorizationUri: https://kauth.kakao.com/oauth/authorize
+            tokenUri: https://kauth.kakao.com/oauth/token
+            userInfoUri: https://kapi.kakao.com/v2/user/me
+            userNameAttribute: id
+          naver:
+            authorizationUri: https://nid.naver.com/oauth2.0/authorize
+            tokenUri: https://nid.naver.com/oauth2.0/token
+            userInfoUri: https://openapi.naver.com/v1/nid/me
+            userNameAttribute: response
+
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/board
-    username: root
+    url: jdbc:mysql://db1.cueyaqicgx3w.ap-northeast-2.rds.amazonaws.com:3306/board
+    username: admin
     password: 1q2w3e4r
   mail:
     host: smtp.gmail.com
