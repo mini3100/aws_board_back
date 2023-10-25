@@ -47,6 +47,6 @@ public class PrincipalUserDetailsService implements UserDetailsService, OAuth2Us
 
         response.put("provider", provider); // provider 속성을 추가해줌.
 
-        return new DefaultOAuth2User(new ArrayList<>(), response, "id");
+        return new DefaultOAuth2User(new ArrayList<>(), response, "id");    // (authorities, response, key값: username)
     }
 }

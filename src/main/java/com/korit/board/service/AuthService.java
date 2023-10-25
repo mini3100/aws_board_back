@@ -1,5 +1,6 @@
 package com.korit.board.service;
 
+import com.korit.board.dto.MergeOAuth2ReqDto;
 import com.korit.board.dto.SigninReqDto;
 import com.korit.board.dto.SignupReqDto;
 import com.korit.board.entity.User;
@@ -76,6 +77,16 @@ public class AuthService {
             throw new JwtException("인증 토큰 유효성 검사 실패");
         }
         return Boolean.parseBoolean(claims.get("enabled").toString());
+    }
+
+    public boolean mergeOauth2(MergeOAuth2ReqDto mergeOAuth2ReqDto) {
+        User user = userMapper.findUserByEmail(mergeOAuth2ReqDto.getEmail());
+
+        if(!passwordEncoder.matches(mergeOAuth2ReqDto.getPassword(), user.getPassword())) { // user의 password : 디비에 저장된 암호화된 비밀번호
+            throw new BadCredentialsException("BadCredentials");
+        }
+
+        return userMapper.updateOauth2IdAndProvider(mergeOAuth2ReqDto.toUserEntity()) > 0;
     }
 }
 

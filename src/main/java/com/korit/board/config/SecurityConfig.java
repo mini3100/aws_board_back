@@ -33,8 +33,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();            // WebMvcConfig의 CORS 설정을 적용
         http.csrf().disable();  // CSRF 보호 비활성화
         http.authorizeRequests()
-                .antMatchers("/auth/**")    // /auth 로 시작하는 모든 요청
+                .antMatchers("/auth/**", "/board/**", "/boards/**")    // /auth 로 시작하는 모든 요청
                 .permitAll()                // 모두 허용하겠다.
+                .antMatchers("/board/content")
+                .authenticated()
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -45,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .oauth2Login()  // 로그인 설정
                 .loginPage("http://localhost:3000/auth/signin") // 로그인 페이지 경로
                 .successHandler(oAuth2SuccessHandler)
-                .userInfoEndpoint()
+                .userInfoEndpoint() // yml에서 인가, 토큰, 유저 정보 url 경로로 정보를 가져오는 과정을 여기서 수행한다.
                 .userService(principalUserDetailsService);
     }
 }

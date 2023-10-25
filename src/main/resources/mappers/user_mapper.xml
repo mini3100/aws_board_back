@@ -61,6 +61,15 @@
             email = #{email}
     </update>
 
+    <update id="updateOauth2IdAndProvider" parameterType="com.korit.board.entity.User">
+        update user_tb
+        set
+            oauth2_id = #{oauth2Id},
+            provider = #{provider}
+        where
+            email = #{email}
+    </update>
+
     <select id="checkDuplicate"
             parameterType="com.korit.board.entity.User"
             resultType="integer">
