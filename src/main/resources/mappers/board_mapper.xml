@@ -15,6 +15,7 @@
             <result property="email" column="email"/>
             <result property="nickname" column="nickname"/>
             <result property="createDate" column="create_date"/>
+            <result property="boardCategoryId" column="board_category_id"/>
             <result property="boardHitsCount" column="board_hits_count"/>
             <result property="boardLikeCount" column="board_like_count"/>
         </resultMap>
@@ -34,6 +35,56 @@
         insert into board_tb
         values(0, #{boardTitle}, #{boardCategoryId}, #{boardContent}, #{email}, now())
     </insert>
+
+    <insert id="insertLike"
+            parameterType="hashmap">
+        insert into board_like_tb
+        values(0, #{boardId}, #{email})
+    </insert>
+
+    <insert id="usePoint">
+        insert into point_history_tb
+        values(0, 0, -500, #{email}, now())
+    </insert>
+
+    <update id="editBoard">
+        update
+            board_tb
+        set
+            board_title = #{boardTitle},
+            board_category_id = #{boardCategoryId},
+            board_content = #{boardContent}
+        where
+            board_id = #{boardId}
+<!--        admin일 경우 게시물을 작성한 유저가 아닌 경우도 수정이 가능하도록-->
+<!--            and (email = #{email}-->
+<!--                or 1 = (select-->
+<!--                            count(*)-->
+<!--                        from-->
+<!--                            authority_tb at-->
+<!--                            left outer join user_tb ut on(ut.user_id = at.user_id)-->
+<!--                        where-->
+<!--                            at.role_id = 3-->
+<!--                            and ut.email = #{email}))-->
+    </update>
+
+    <delete id="deleteLike"
+            parameterType="hashmap">
+        delete
+        from
+            board_like_tb
+        where
+            board_id = #{boardId}
+            and email = #{email}
+    </delete>
+
+    <delete id="deleteBoard">
+        delete
+        from
+            board_tb
+        where
+            board_id = #{boardId}
+    </delete>
 
     <select id="getBoardCategories" resultMap="boardCategoryMap">
         select
@@ -105,6 +156,83 @@
         order by
             board_id desc
         limit #{index}, 10
+    </select>
+    <select id="getBoardCount" parameterType="hashmap" resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            board_tb bt
+            left outer join user_tb ut on(ut.email = bt.email)
+        where
+            1 = 1
+            <if test="!categoryName.equals('all')">
+                and bt.board_category_id = (
+                    select
+                        board_category_id
+                    from
+                        board_category_tb
+                    where
+                        board_category_name = #{categoryName}
+                )
+            </if>
+            <choose>
+                <when test="optionName.equals('제목')">
+                    and bt.board_title like concat("%", #{searchValue}, "%")
+                </when>
+                <when test="optionName.equals('작성자')">
+                    and ut.nickname like concat("%", #{searchValue}, "%")
+                </when>
+                <otherwise>
+                    and (
+                        bt.board_title like concat("%", #{searchValue}, "%")
+                        or ut.nickname like concat("%", #{searchValue}, "%")
+                    )
+                </otherwise>
+            </choose>
+    </select>
+
+    <select id="getBoardByBoardId" resultMap="boardMap">
+        select
+            bt.board_id,
+            bt.board_title,
+            bt.board_category_id,
+            bt.board_content,
+            bt.email,
+            ut.nickname,
+            bt.create_date,
+            bhc.board_hits_count,
+            blc.board_like_count
+        from
+            board_tb bt
+            left outer join user_tb ut on(ut.email = bt.email)
+            left outer join (select
+                            board_id,
+                                count(*) as board_hits_count
+                            from
+                                board_hits_tb
+                            group by
+                                board_id) bhc on(bhc.board_id = bt.board_id)
+            left outer join (select
+                            board_id,
+                                count(*) as board_like_count
+                            from
+                                board_like_tb
+                            group by
+                                board_id) blc on(blc.board_id = bt.board_id)
+        where
+            bt.board_id = #{boardId}
+    </select>
+
+    <select id="getLikeState"
+            parameterType="hashmap"
+            resultType="java.lang.Integer">
+        select
+            count(*)
+        from
+            board_like_tb
+        where
+            board_id = #{boardId}
+        and email = #{email}
     </select>
 
 </mapper>

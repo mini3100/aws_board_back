@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.board.repository.OrderMapper">
+    <resultMap id="orderMap" type="com.korit.board.entity.Order">
+        <id property="orderId" column="order_id"/>
+        <result property="productId" column="product_id"/>
+        <result property="email" column="email"/>
+        <result property="orderDate" column="order_date"/>
+    </resultMap>
+
+    <insert id="saveOrder" parameterType="com.korit.board.entity.Order">
+        insert into order_tb
+        values(0, #{productId}, #{email}, now())
+    </insert>
+</mapper>

@@ -13,6 +13,7 @@
         <result property="profileUrl" column="profile_url"/>
         <result property="oauth2Id" column="oauth2_id"/>
         <result property="provider" column="provider"/>
+        <result property="userPoint" column="user_point"/>
     </resultMap>
 
     <insert id="saveUser" parameterType="com.korit.board.entity.User">
@@ -92,19 +93,31 @@
 
     <select id="findUserByEmail" resultMap="userMap">
         select
-            user_id,
-            email,
-            password,
-            name,
-            nickname,
-            enabled,
-            profile_url,
-            oauth2_id,
-            provider
+            ut.user_id,
+            ut.email,
+            ut.password,
+            ut.name,
+            ut.nickname,
+            ut.enabled,
+            ut.profile_url,
+            ut.oauth2_id,
+            ut.provider,
+            sum(pht.point_history_price) as user_point
         from
-            user_tb
+            user_tb ut
+            left outer join point_history_tb pht on(pht.email = ut.email)
         where
-            email = #{email}
+            ut.email = #{email}
+        group by
+            ut.user_id,
+            ut.email,
+            ut.password,
+            ut.name,
+            ut.nickname,
+            ut.enabled,
+            ut.profile_url,
+            ut.oauth2_id,
+            ut.provider
     </select>
 
     <select id="findUserByOauth2Id" resultType="com.korit.board.entity.User">

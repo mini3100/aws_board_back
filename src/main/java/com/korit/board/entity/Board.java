@@ -1,6 +1,7 @@
 package com.korit.board.entity;
 
 import com.korit.board.dto.BoardListRespDto;
+import com.korit.board.dto.GetBoardRespDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 
 @Builder
 @NoArgsConstructor
@@ -32,6 +34,20 @@ public class Board {
                 .createDate(createDate.format(DateTimeFormatter.ISO_DATE))  // (연, 월, 일)만 잘라줌
                 .hitsCount(boardHitsCount)
                 .likeCount(boardLikeCount)
+                .build();
+    }
+
+    public GetBoardRespDto toBoardDto() {
+        return GetBoardRespDto.builder()
+                .boardId(boardId)
+                .boardTitle(boardTitle)
+                .boardContent(boardContent)
+                .boardCategoryId(boardCategoryId)
+                .email(email)
+                .nickname(nickname)
+                .createDate(createDate.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.FULL)))
+                .boardHitsCount(boardHitsCount)
+                .boardLikeCount(getBoardLikeCount())
                 .build();
     }
 }

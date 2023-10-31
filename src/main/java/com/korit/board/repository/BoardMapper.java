@@ -12,5 +12,13 @@ public interface BoardMapper {
     public List<BoardCategory> getBoardCategories();
     public int saveCategory(BoardCategory boardCategory);
     public int saveBoard(Board board);
+    public int usePoint(String email);
     public List<Board> getBoardList(Map<String, Object> paramsMap);
+    public int getBoardCount(Map<String, Object> paramsMap);
+    public Board getBoardByBoardId(int boardId);
+    public int getLikeState(Map<String, Object> paramsMap);
+    public int insertLike(Map<String, Object> paramsMap);
+    public int deleteLike(Map<String, Object> paramsMap);
+    public int deleteBoard(int boardId);
+    public int editBoard(Board board);
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.korit.board.repository.ProductMapper">
+    <resultMap id="productMap" type="com.korit.board.entity.Product">
+        <id property="productId" column="product_id"/>
+        <result property="productName" column="product_name"/>
+        <result property="productPrice" column="product_price"/>
+    </resultMap>
+
+    <select id="getProducts" resultMap="productMap">
+        select
+            product_id,
+            product_name,
+            product_price
+        from
+            product_tb
+    </select>
+</mapper>
